@@ -9,7 +9,7 @@ const BookingSchema = new mongoose.Schema({
   apartment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Apartment", 
-    // required: true,
+    required: true,
   },
   ///////////FÜR ADMIN BOOKING ///////////////
   // selectedObject: { type: mongoose.Schema.Types.ObjectId, ref: 'apartment' },

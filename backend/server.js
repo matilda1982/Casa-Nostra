@@ -45,6 +45,8 @@ app.post("/booking/",PostAdminBooking)
 
 app.get('/bookings', GetAllBookings); // New endpoint
 
+app.get('/bookings/:apartment',GetBookedApartment);
+
 app.get("/reservation",getReservation)
 app.delete("/reservation/:id",deleteReservation)
 app.patch("/reservation/:id",updateReservation)

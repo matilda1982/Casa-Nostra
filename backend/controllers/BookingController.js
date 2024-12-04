@@ -1,6 +1,6 @@
 import { connect } from "../db.js";
 import { Booking } from "../models/BookingModel.js";
-
+import mongoose from "mongoose";
 
 export const PostBooking = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ export const PostBooking = async (req, res) => {
 
     if (!user || !apartment || !startDate || !endDate || !totalPrice ||
         !advancePayment || !people) {
-      return res.status(400).json({ error: "Missing required fields. At least 1 Persone" });
+      return res.status(400).json({ error: "Missing required fields." });
     }
 
     const start = new Date(startDate);
@@ -160,17 +160,26 @@ export const PostAdminBooking = async (req, res) => {
 
 
 export const GetBookedApartment = async (req, res) => {
-  const { id } = req.params;
   try {
-    await connect();
+    const { apartment } = req.params; // ili req.body ako dolazi iz tela zahteva
+    console.log("Apartment ID:", apartment); // Provera šta dolazi kao ID
 
-    const bookings = await Booking.find({ apartment: id })
-      .populate('apartment')
-      .populate('user');
+    // Provera da li je `apartment` validan ObjectId
+    if (!apartment || apartment === "undefined") {
+      return res.status(400).json({ error: "Invalid Apartment ID" });
+    }
 
-    res.json(bookings);
-  } catch (err) {
-    console.error('Error fetching reservations:', err);
-    res.status(500).json({ error: 'Failed to fetch reservations' });
+    // Provera validnosti ObjectId
+    if (!mongoose.Types.ObjectId.isValid(apartment)) {
+      return res.status(400).json({ error: "Invalid ObjectId format" });
+    }
+
+    
+   
+const bookings = await Booking.find({ apartment: apartment });
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    res.status(500).json({ error: "Failed to fetch reservations" });
   }
-}
+};
